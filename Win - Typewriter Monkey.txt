@@ -1,0 +1,118 @@
+REM    Title: Tipewriter Monkey
+REM    Author: Will_C137 
+REM    Description: Writes random text forever in Notepad
+REM                 Left on forever, it will eventually write the whole Harry Potter series 
+REM    Target: Windows 10, 11
+
+
+ATTACKMODE HID
+
+
+REM    ###########################################
+REM    #                                         #
+REM    #            Detection Delay              #
+REM    #                                         #
+REM    ###########################################
+
+EXTENSION DETECT_READY
+    REM VERSION 1.0
+
+    REM Author: dallaswinger
+    REM Source: https://github.com/hak5/usbrubberducky-payloads/blob/master/payloads/extensions/detect_ready.txt
+    REM USAGE:
+    REM Extension runs inline (here)
+    REM Place at beginning of payload (besides ATTACKMODE) to act as dynamic
+    REM boot delay
+
+    REM TARGETS:
+    REM Any system that reflects CAPSLOCK will detect minimum required delay
+    REM Any system that does not reflect CAPSLOCK will hit the max delay of 3000ms
+
+    REM CONFIGURATION:
+    DEFINE RESPONSE_DELAY 25
+    DEFINE ITERATION_LIMIT 120
+
+    VAR $C = 0
+    WHILE (($_CAPSLOCK_ON == FALSE) && ($C < ITERATION_LIMIT))
+        CAPSLOCK
+        DELAY RESPONSE_DELAY
+        $C = ($C + 1)
+    END_WHILE
+    CAPSLOCK
+END_EXTENSION
+
+
+
+
+REM    ###########################################
+REM    #                                         #
+REM    #                  Main                   #
+REM    #                                         #
+REM    ###########################################
+
+REM    ###   OPEN NOTEPAD   ### 
+
+GUI r
+DELAY 500
+STRING notepad.exe
+ENTER
+
+
+REM   ###   SAVE FILE   ###
+
+DELAY 1000
+CTRL s
+DELAY 500
+STRING Typewriter Monkey
+ENTER
+
+
+REM    ###   TYPE AWAY   ###
+
+DELAY 1000
+STRINGLN I am Typewriter Monkey, nice to meet you! 
+ENTER
+DELAY 1000
+STRINGLN I love pressing random keys again and again. 
+DELAY 1000
+STRING If you let me type forever, I will eventually write the whole harry potter book series
+DELAY 500
+STRING .
+DELAY 500
+STRING .
+DELAY 500
+STRING . 
+DELAY 500
+STRINGLN in theory.
+DELAY 500
+STRINGLN Here we go!
+ENTER
+ENTER
+DELAY 500 
+
+VAR $COUNT = 0
+VAR $NUM = 1
+
+WHILE TRUE
+    IF ($COUNT == 100) THEN
+        ENTER
+        CTRL s
+        $COUNT = 0
+    END_IF
+    
+    REM odds of a space are 1 in 5
+    REM the average english word lenght is 4.7
+    REM source : https://www.wyliecomm.com/2021/11/whats-the-best-length-of-a-word-online/#:~:text=The%20average%20word%20in%20the,word%20length%20to%204.7%20characters%3F
+    $_RANDOM_MIN = 1
+    $_RANDOM_MAX = 5
+    
+    IF ($_RANDOM_INT == 1) THEN
+        REM write a space
+        STRING  
+    ELSE
+        RANDOM_LETTER
+    END_IF
+
+    $COUNT = ($COUNT + 1)
+END_WHILE
+
